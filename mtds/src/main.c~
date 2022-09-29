@@ -1,0 +1,80 @@
+#include "pbc.h"
+#include <gmp.h>
+#include <string.h>
+#include <stdio.h>
+#include <time.h>
+#include "cryptog.h"
+
+#include "signature.h"
+
+
+void init(){
+
+ initParamSig();
+  initParam();
+ initKey();
+
+
+}
+
+
+
+
+void print_welcome()
+{
+	printf("===================================================================\n");
+	printf("=                                                                 =\n");
+	printf("=                      EDGE   Privacy   Server                    =\n");
+	printf("=                                                          beta   =\n");
+	printf("===================================================================\n");
+	printf("Compiling time: UTC " __TIME__ " " __DATE__ "\n");
+	printf("initializing...\n");
+}
+
+
+int main44(){
+	print_welcome();
+	init();
+	int k=10;
+	element_t us[1024];
+	element_t Us[1024];
+	mpz_t eks[1024];
+	element_t cs[1024];
+	element_t sigs[1024][2];
+	int tims[1024];
+	for(int i=0;i<k;i++)
+	{
+		 initKeySig(us[i], Us[i]);
+
+		  initRegist(eks[i],k,i);
+
+		  mpz_t m;
+		  mpz_init_set_si(m,(i+1));
+		 encryption(cs[i],m);
+int ms[2];
+decryption(ms,cs[i]);
+printf("m %d \n m2  %d\n",ms[0],ms[1]);
+	         signature(sigs[i],&tims[i],us[i],cs[i],2,i);
+	}
+    /*element_clear(cs[1]);
+      mpz_t m;
+          mpz_init_set_si(m,2);
+ encryption(cs[1],m);
+*/
+
+
+
+
+int x= verifys(tims, sigs,Us,cs,2,k);
+if(x==0)printf("verify  success");
+else
+printf("verify failed");
+
+element_t ac;
+aggrea( ac, cs,k);
+
+int ms[2];
+decryption(ms,ac);
+printf("m %d \n m2  %d",ms[0],ms[1]);
+return 0;
+}
